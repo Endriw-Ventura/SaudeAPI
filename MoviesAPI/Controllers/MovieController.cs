@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using MoviesAPI.Data;
+using MoviesAPI.Data.DTOs;
 using MoviesAPI.Models;
 
 namespace MoviesAPI.Controllers;
@@ -17,11 +18,19 @@ public class MovieController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult AddMovie([FromBody] Movie movie)
+    public IActionResult AddMovie([FromBody] CreateMovieDTO movie)
     {
-        _context.Movies.Add(movie);
+
+        Movie newMovie = new Movie
+        {
+            Title = movie.Title,
+            Gender = movie.Gender,
+            Duration = movie.Duration,
+        };
+
+        _context.Movies.Add(newMovie);
         _context.SaveChanges();
-        return CreatedAtAction(nameof(GetMovieByID), new { id = movie.Id }, movie);
+        return CreatedAtAction(nameof(GetMovieByID), new { id = newMovie.Id }, newMovie);
     }
 
     [HttpGet]
@@ -41,30 +50,19 @@ public class MovieController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public IActionResult UpdateMovie(int id, [FromBody] Movie updatedMovie)
+    public IActionResult UpdateMovie(int id, [FromBody] UpdateMovieDTO updatedMovie)
     {
         Movie? movie = _context.Movies.FirstOrDefault(m => m.Id == id);
         if (movie == null)
             return NotFound();
 
-        movie = updatedMovie;
-        _context.SaveChanges();
+        movie.Title = updatedMovie.Title;
+        movie.Gender = updatedMovie.Gender;
+        movie.Duration = updatedMovie.Duration;
 
+        _context.SaveChanges();
         return NoContent();
     }
-
-    //[HttpPatch("{id}")]
-    //public IActionResult UpdateMovie(int id, [FromBody] )
-    //{
-    //    Movie? movie = _context.Movies.FirstOrDefault(m => m.Id == id);
-    //    if (movie == null)
-    //        return NotFound();
-
-    //    movie = updatedMovie;
-    //    _context.SaveChanges();
-
-    //    return NoContent();
-    //}
 
     [HttpDelete("{id}")]
     public IActionResult DeleteMovie(int id)
