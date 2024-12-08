@@ -1,13 +1,9 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace MoviesAPI.Models;
+namespace MoviesAPI.Data.DTOs;
 
-public class Movie
+public class UpdateMovieDTO
 {
-    [Key]
-    [Required]
-    public int Id { get; internal set; }
-
     [Required(ErrorMessage = "The Title field is required")]
     [StringLength(50, ErrorMessage = "The Title field must be at most 50 characters")]
     public string Title { get; set; }
@@ -19,5 +15,4 @@ public class Movie
     [Required(ErrorMessage = "The Duration field is required")]
     [Range(45, 400, ErrorMessage = "The Duration field must be between 45 and 400 minutes")]
     public int Duration { get; set; }
-
 }
