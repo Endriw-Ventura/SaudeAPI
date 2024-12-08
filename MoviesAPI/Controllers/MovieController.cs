@@ -39,4 +39,42 @@ public class MovieController : ControllerBase
 
         return Ok(movie);
     }
+
+    [HttpPut("{id}")]
+    public IActionResult UpdateMovie(int id, [FromBody] Movie updatedMovie)
+    {
+        Movie? movie = _context.Movies.FirstOrDefault(m => m.Id == id);
+        if (movie == null)
+            return NotFound();
+
+        movie = updatedMovie;
+        _context.SaveChanges();
+
+        return NoContent();
+    }
+
+    //[HttpPatch("{id}")]
+    //public IActionResult UpdateMovie(int id, [FromBody] )
+    //{
+    //    Movie? movie = _context.Movies.FirstOrDefault(m => m.Id == id);
+    //    if (movie == null)
+    //        return NotFound();
+
+    //    movie = updatedMovie;
+    //    _context.SaveChanges();
+
+    //    return NoContent();
+    //}
+
+    [HttpDelete("{id}")]
+    public IActionResult DeleteMovie(int id)
+    {
+        Movie? movie = _context.Movies.FirstOrDefault(m => m.Id == id);
+        if (movie == null)
+            return NotFound();
+
+        _context.Movies.Remove(movie);
+        _context.SaveChanges();
+        return NoContent();
+    }
 }
