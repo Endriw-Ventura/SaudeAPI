@@ -16,4 +16,13 @@
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Data\DTOs\Doctor\" />
+    <Folder Include="Data\DTOs\Event\" />
+    <Folder Include="Data\DTOs\Address\" />
+    <Folder Include="Data\DTOs\Specialty\" />
+    <Folder Include="Data\DTOs\UserInfo\" />
+    <Folder Include="Migrations\" />
+  </ItemGroup>
+
 </Project>
