@@ -19,11 +19,38 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
-    public IActionResult AddUser([FromBody] User user)
+    public IActionResult AddUser([FromBody] CreateUserDTO user)
     {
-        _context.Users.Add(user);
+        User newUser = new User { 
+            Name = user.Name,
+            Surname = user.Surname,
+            Email = user.Email,
+            CPF = user.CPF,
+            Password = user.Password,
+            Address = new Address {
+                Country = user.Address.Country,
+                State = user.Address.State,
+                City = user.Address.City,
+                Neighborhood = user.Address.Neighborhood,
+                Number = user.Address.Number,
+                StreetName = user.Address.StreetName,
+                ZipCode = user.Address.ZipCode,
+                Complement = user.Address.Complement,
+            },
+            UserInfo = new UserInfo
+            {
+                Allergies = user.UserInfo.Allergies,
+                Cirurgies = user.UserInfo.Cirurgies,
+                BloodType = user.UserInfo.BloodType,
+                MedicalCondition = user.UserInfo.MedicalCondition,
+                MotherName = user.UserInfo.MotherName,
+                Medications = user.UserInfo.Medications,
+                PreviousCirurgies = user.UserInfo.PreviousCirurgies,
+            },
+        };
+        _context.Users.Add(newUser);
         _context.SaveChanges();
-        return CreatedAtAction(nameof(GetUserByID), new { id = user.Id }, user);
+        return CreatedAtAction(nameof(GetUserByID), new { id = newUser.Id }, newUser);
     }
 
     [HttpGet]
