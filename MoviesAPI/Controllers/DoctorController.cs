@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using MoviesAPI.Data;
 using MoviesAPI.Data.DTOs;
@@ -9,6 +10,7 @@ namespace MoviesAPI.Controllers;
 
 [ApiController]
 [Route("Doctor")]
+[Authorize]
 public class DoctorController : ControllerBase
 {
     private APIContext _context;

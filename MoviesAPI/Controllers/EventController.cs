@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 using MoviesAPI.Data;
 using MoviesAPI.Data.DTOs;
@@ -8,6 +9,7 @@ namespace MoviesAPI.Controllers;
 
 [ApiController]
 [Route("Event")]
+[Authorize]
 public class EventController : ControllerBase
 {
     private APIContext _context;

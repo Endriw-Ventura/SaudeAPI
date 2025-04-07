@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using MoviesAPI.Data;
 using MoviesAPI.Models;
 
@@ -6,6 +7,7 @@ namespace MoviesAPI.Controllers;
 
 [ApiController]
 [Route("Specialty")]
+[Authorize]
 public class SpecialtyController : ControllerBase
 {
     private APIContext _context;
