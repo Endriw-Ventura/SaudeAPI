@@ -15,8 +15,6 @@ public class User
     [ForeignKey("UserInfo")]
     public int UserInfoId { get; set; }
 
-    //[Required(ErrorMessage = "The Name field is required")]
-    //[StringLength(50, ErrorMessage = "The Name field must be at most 15 characters")]
     public string Name { get; set; }
 
     public string Surname { get; set; }

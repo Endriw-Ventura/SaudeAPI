@@ -4,7 +4,7 @@ namespace MoviesAPI.Data.DTOs.User;
 
 public class UpdateUserDTO
 {
-    public string Title { get; set; }
-    public string Gender { get; set; }
-    public int Duration { get; set; }
+    public string Name { get; set; }
+    public string Surname { get; set; }
+    public string Email { get; set; }
 }
