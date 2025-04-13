@@ -45,14 +45,14 @@ namespace MoviesAPI.Services
             return _context.Users.Skip(skip).Take(take);
         }
 
-        public User? GetByID(int id)
+        public User? GetUserByID(int id)
         {
             return _context.Users.FirstOrDefault(m => m.Id == id);
         }
 
         public User? UpdateUser(int id, UpdateUserDTO updatedUser)
         {
-            User? newUser = GetByID(id);
+            User? newUser = GetUserByID(id);
 
             if (newUser == null) {
                 return null;

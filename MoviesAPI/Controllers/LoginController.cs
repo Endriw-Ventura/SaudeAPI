@@ -12,10 +12,13 @@ namespace MoviesAPI.Controllers
     {
 
         private readonly LoginService _loginService;
+        private readonly JWTService _JWTService;
 
-        public LoginController(LoginService loginService)
+
+        public LoginController(LoginService loginService, JWTService jWTService)
         {
             _loginService = loginService;
+            _JWTService = jWTService;
         }
 
         [HttpPost("login")]

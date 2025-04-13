@@ -2,5 +2,6 @@
 {
     public class CreateSpecialtyDTO
     {
+        public string Name { get; set; }
     }
 }

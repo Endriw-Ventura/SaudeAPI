@@ -6,10 +6,11 @@ namespace MoviesAPI.Data.DTOs.Doctor
     public class UpdateDoctorDTO
     {
         public string Name { get; set; }
+        public string Surname { get; set; }
         public string Price { get; set; }
         public TimeOnly InitialHour { get; set; }
         public TimeOnly FinalHour { get; set; }
         public string WeekDays { get; set; }
-        public CreateSpecialtyDTO Specialty { get; set; }
+        public int IdSpecialty { get; set; }
     }
 }

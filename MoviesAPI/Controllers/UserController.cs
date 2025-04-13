@@ -19,6 +19,7 @@ public class UserController : ControllerBase
     }
 
     [HttpPost]
+    [AllowAnonymous]
     public IActionResult AddUser([FromBody] CreateUserDTO userDTO)
     {
         User user = _userService.CreateUser(userDTO);
@@ -34,7 +35,7 @@ public class UserController : ControllerBase
     [HttpGet("{id}")]
     public IActionResult GetUserByID(int id)
     {
-        User? user = _userService.GetByID(id);
+        User? user = _userService.GetUserByID(id);
         if (user == null)
             return NotFound();
 
@@ -55,7 +56,7 @@ public class UserController : ControllerBase
     [HttpDelete("{id}")]
     public IActionResult DeleteUser(int id)
     {
-        User? user = _userService.GetByID(id);
+        User? user = _userService.GetUserByID(id);
         if (user == null)
             return NotFound();
 

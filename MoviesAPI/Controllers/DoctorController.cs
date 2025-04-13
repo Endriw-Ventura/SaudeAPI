@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using MoviesAPI.Data;
-using MoviesAPI.Data.DTOs;
+using MoviesAPI.Data.DTOs.Doctor;
 using MoviesAPI.Models;
-using System.Numerics;
+using MoviesAPI.Services;
 
 namespace MoviesAPI.Controllers;
 
@@ -13,31 +11,31 @@ namespace MoviesAPI.Controllers;
 [Authorize]
 public class DoctorController : ControllerBase
 {
-    private APIContext _context;
+    private readonly DoctorService _doctorService;
 
-    public DoctorController(APIContext context)
+    public DoctorController(DoctorService doctorService)
     {
-        _context = context;
+        _doctorService = doctorService;
     }
 
     [HttpPost]
-    public IActionResult AddDoctor([FromBody] Doctor doctor)
+    [AllowAnonymous]
+    public IActionResult AddDoctor([FromBody] CreateDoctorDTO doctorDTO)
     {
-        _context.Doctors.Add(doctor);
-        _context.SaveChanges();
+        Doctor doctor = _doctorService.CreateDoctor(doctorDTO);
         return CreatedAtAction(nameof(GetDoctorByID), new { id = doctor.Id }, doctor);
     }
 
     [HttpGet]
     public IEnumerable<Doctor> GetDoctors([FromQuery] int skip = 0, [FromQuery] int take = 20)
     {
-        return _context.Doctors.Skip(skip).Take(take);
+        return _doctorService.GetDoctors(skip, take);
     }
 
     [HttpGet("{id}")]
     public IActionResult GetDoctorByID(int id)
     {
-        Doctor? doctor = _context.Doctors.FirstOrDefault(m => m.Id == id);
+        Doctor? doctor = _doctorService.GetDoctorByID(id);
         if (doctor == null)
             return NotFound();
 
@@ -45,27 +43,24 @@ public class DoctorController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public IActionResult UpdateDoctor(int id, [FromBody] Doctor updatedDoctor)
+    public IActionResult UpdateDoctor(int id, [FromBody] UpdateDoctorDTO updatedDoctor)
     {
-        Doctor? doctor = _context.Doctors.FirstOrDefault(m => m.Id == id);
+
+        Doctor? doctor = _doctorService.UpdateDoctor(id, updatedDoctor);
         if (doctor == null)
             return NotFound();
 
-        doctor.Name = updatedDoctor.Name;
-
-        _context.SaveChanges();
         return NoContent();
     }
 
     [HttpDelete("{id}")]
     public IActionResult DeleteDoctor(int id)
     {
-        Doctor? doctor = _context.Doctors.FirstOrDefault(m => m.Id == id);
+        Doctor? doctor = _doctorService.GetDoctorByID(id);
         if (doctor == null)
             return NotFound();
 
-        _context.Doctors.Remove(doctor);
-        _context.SaveChanges();
+        _doctorService.DeleteDoctor(doctor);
         return NoContent();
     }
 }

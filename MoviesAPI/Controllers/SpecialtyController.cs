@@ -1,7 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPI.Data;
+using MoviesAPI.Data.DTOs.Specialty;
 using MoviesAPI.Models;
+using MoviesAPI.Services;
 
 namespace MoviesAPI.Controllers;
 
@@ -10,31 +12,32 @@ namespace MoviesAPI.Controllers;
 [Authorize]
 public class SpecialtyController : ControllerBase
 {
-    private APIContext _context;
+    private readonly SpecialtyService _specialtyService;
 
-    public SpecialtyController(APIContext context)
+    public SpecialtyController(SpecialtyService specialtyService)
     {
-        _context = context;
+        _specialtyService = specialtyService;
     }
 
     [HttpPost]
-    public IActionResult AddSpecialty([FromBody] Specialty specialty)
+    [AllowAnonymous]
+    public IActionResult AddSpecialty([FromBody] CreateSpecialtyDTO specialtyDTO)
     {
-        _context.Specialties.Add(specialty);
-        _context.SaveChanges();
+        Specialty specialty = _specialtyService.CreateSpecialty(specialtyDTO);
         return CreatedAtAction(nameof(GetSpecialtyByID), new { id = specialty.Id }, specialty);
     }
 
     [HttpGet]
-    public IEnumerable<Specialty> GetSpecialties([FromQuery] int skip = 0, [FromQuery] int take = 20)
+    [AllowAnonymous]
+    public IEnumerable<Specialty> GetSpecialties([FromQuery] int skip = 0, [FromQuery] int take = 50)
     {
-        return _context.Specialties.Skip(skip).Take(take);
+        return _specialtyService.GetSpecialties(skip, take);
     }
 
     [HttpGet("{id}")]
     public IActionResult GetSpecialtyByID(int id)
     {
-        Specialty? specialty = _context.Specialties.FirstOrDefault(m => m.Id == id);
+        Specialty? specialty = _specialtyService.GetSpecialtyByID(id);
         if (specialty == null)
             return NotFound();
 
@@ -42,27 +45,23 @@ public class SpecialtyController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public IActionResult UpdateSpecialty(int id, [FromBody] Specialty updatedSpecialty)
+    public IActionResult UpdateSpecialty(int id, [FromBody] UpdateSpecialtyDTO updatedSpecialty)
     {
-        Specialty? specialty = _context.Specialties.FirstOrDefault(m => m.Id == id);
+        Specialty? specialty = _specialtyService.UpdateSpecialty(id, updatedSpecialty);
         if (specialty == null)
             return NotFound();
 
-        specialty.Name = updatedSpecialty.Name;
-
-        _context.SaveChanges();
         return NoContent();
     }
 
     [HttpDelete("{id}")]
     public IActionResult DeleteSpecialty(int id)
     {
-        Specialty? specialty = _context.Specialties.FirstOrDefault(m => m.Id == id);
+        Specialty? specialty = _specialtyService.GetSpecialtyByID(id);
         if (specialty == null)
             return NotFound();
 
-        _context.Specialties.Remove(specialty);
-        _context.SaveChanges();
+        _specialtyService.DeleteSpecialty(specialty);
         return NoContent();
     }
 }
