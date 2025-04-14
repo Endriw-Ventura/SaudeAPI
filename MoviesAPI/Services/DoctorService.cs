@@ -18,21 +18,43 @@ namespace MoviesAPI.Services
 
         public Doctor CreateDoctor(CreateDoctorDTO doctorDTO)
         {
+            var weekdays = CreateWeekdays(doctorDTO.WeekdaysDTO);
+
+            _context.Weekdays.Add(weekdays);
+            _context.SaveChanges();
+
             var doctor = new Doctor
             {
                 Name = doctorDTO.Name,
                 Surname = doctorDTO.Surname,
-                WeekDays = doctorDTO.WeekDays,
                 CRM = doctorDTO.CRM,
                 InitialHour = doctorDTO.InitialHour,
                 FinalHour = doctorDTO.FinalHour,
                 Password = doctorDTO.Password,
-                Specialty = _specialtyService.GetSpecialtyByID(doctorDTO.IdSpecialty),
-                Price = doctorDTO.Price
+                SpecialtyId = doctorDTO.SpecialtyId,
+                Price = doctorDTO.Price,
+                WeekdaysId = weekdays.Id,
+                WeekDays = weekdays
             };
 
             AddDoctor(doctor);
+
             return doctor;
+        }
+
+        public Weekdays CreateWeekdays(CreateWeekdaysDTO weekdaysDTO)
+        {
+            var weekdays = new Weekdays
+            {
+                Saturday = weekdaysDTO.Saturday,
+                Monday = weekdaysDTO.Monday,
+                Sunday = weekdaysDTO.Sunday,
+                Thursday = weekdaysDTO.Thursday,
+                Tuesday = weekdaysDTO.Tuesday,
+                Friday = weekdaysDTO.Friday,
+                Wednesday = weekdaysDTO.Wednesday
+            };
+            return weekdays;
         }
 
         public void AddDoctor(Doctor doctor)
@@ -85,10 +107,10 @@ namespace MoviesAPI.Services
                 newDoctor.FinalHour = updatedDoctor.FinalHour;
             }
 
-            if (newDoctor.WeekDays != updatedDoctor.WeekDays)
-            {
-                newDoctor.WeekDays = updatedDoctor.WeekDays;
-            }
+            //if (newDoctor.WeekDays != updatedDoctor.WeekDays)
+            //{
+            //    newDoctor.WeekDays = updatedDoctor.WeekDays;
+            //}
 
             if (newDoctor.Specialty.Id != updatedDoctor.IdSpecialty)
             {

@@ -12,7 +12,7 @@ namespace MoviesAPI.Data.DTOs.Doctor
         public string Password { get; set; }
         public TimeOnly InitialHour { get; set; }
         public TimeOnly FinalHour { get; set; }
-        public CreateWeekdaysDTO WeekDays { get; set; }
-        public int IdSpecialty { get; set; }
+        public CreateWeekdaysDTO WeekdaysDTO { get; set; }
+        public int SpecialtyId { get; set; }
     }
 }

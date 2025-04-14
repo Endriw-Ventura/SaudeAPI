@@ -12,4 +12,5 @@ public class APIContext : DbContext
     public DbSet<Doctor> Doctors { get; set; }
     public DbSet<Event> Events { get; set; }
     public DbSet<Specialty> Specialties { get; set; }    
+    public DbSet<Weekdays> Weekdays { get; set; }    
 }
