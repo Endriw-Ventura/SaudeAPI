@@ -27,9 +27,10 @@ namespace MoviesAPI.Services
             {
                 Name = doctorDTO.Name,
                 Surname = doctorDTO.Surname,
+                Email = doctorDTO.Email, 
                 CRM = doctorDTO.CRM,
-                InitialHour = doctorDTO.InitialHour,
-                FinalHour = doctorDTO.FinalHour,
+                InitialHour = TimeOnly.Parse(doctorDTO.InitialHour),
+                FinalHour = TimeOnly.Parse(doctorDTO.FinalHour),
                 Password = doctorDTO.Password,
                 SpecialtyId = doctorDTO.SpecialtyId,
                 Price = doctorDTO.Price,
@@ -38,7 +39,6 @@ namespace MoviesAPI.Services
             };
 
             AddDoctor(doctor);
-
             return doctor;
         }
 
@@ -106,11 +106,6 @@ namespace MoviesAPI.Services
             {
                 newDoctor.FinalHour = updatedDoctor.FinalHour;
             }
-
-            //if (newDoctor.WeekDays != updatedDoctor.WeekDays)
-            //{
-            //    newDoctor.WeekDays = updatedDoctor.WeekDays;
-            //}
 
             if (newDoctor.Specialty.Id != updatedDoctor.IdSpecialty)
             {

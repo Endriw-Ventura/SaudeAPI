@@ -1,65 +1,71 @@
 ﻿using Microsoft.IdentityModel.Tokens;
 using MoviesAPI.Data;
 using MoviesAPI.Data.DTOs.Login;
-using MoviesAPI.Data.DTOs.User;
 using MoviesAPI.Models;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using Microsoft.Extensions.Options;
 
 namespace MoviesAPI.Services
 {
     public class LoginService
     {
         private readonly APIContext _context;
-        private readonly IConfiguration _config;
+        private readonly JWTSettings _jwtSettings;
 
-        public LoginService(APIContext context, IConfiguration config)
+        public LoginService(APIContext context, IOptions<JWTSettings> jwtOptions)
         {
             _context = context;
-            _config = config;
+            _jwtSettings = jwtOptions.Value;
         }
 
-        public UserDTO? Login(LoginRequest request)
+        public LoggedUserDTO? Login(LoginRequest request)
         {
-            User? user = _context.Users.FirstOrDefault(u => u.Email == request.Email && u.Password == request.Password);
-
-            if (user == null)
+            var user = _context.Users.FirstOrDefault(u => u.Email == request.Email && u.Password == request.Password);
+            if (user != null)
             {
-                return null;
+                return CreateLoggedUserDTO(user.Id, user.Email, "user");
             }
 
-            return CreateUserDTO(user);
+            var doctor = _context.Doctors.FirstOrDefault(d => d.Email == request.Email && d.Password == request.Password);
+            if (doctor != null)
+            {
+                return CreateLoggedUserDTO(doctor.Id, doctor.Email, "doctor");
+            }
+
+            return null;
         }
 
-        public UserDTO CreateUserDTO(User user)
+        public LoggedUserDTO CreateLoggedUserDTO(int id, string email, string role)
         {
-            return new UserDTO
+            return new LoggedUserDTO
             {
-                Id = user.Id,
-                Name = user.Name,
+                Id = id,
+                Email = email,
                 Role = "user",
-                Token = GerarJwt(user)
+                Token = GerarJwt(id, email, role)
             };
         }
 
-        private string GerarJwt(User user)
+        private string GerarJwt(int id, string email, string role)
         {
-            var claims = new[]
-            {
-            new Claim(ClaimTypes.Name, user.Name),
-            new Claim(ClaimTypes.Role, "user"),
-            new Claim("Id", user.Id.ToString())
-        };
-
-            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config["JwtSettings:Secret"]!));
+            var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_jwtSettings.Secret));
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
+            var claims = new[]
+            {
+            new Claim(JwtRegisteredClaimNames.Sub, id.ToString()),
+            new Claim(JwtRegisteredClaimNames.Email, email),
+            new Claim(ClaimTypes.Role, role),
+            new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString())
+        };
+
             var token = new JwtSecurityToken(
-                issuer: _config["JwtSettings:Issuer"],
-                audience: _config["JwtSettings:Audience"],
+                issuer: _jwtSettings.Issuer,
+                audience: _jwtSettings.Audience,
                 claims: claims,
-                expires: DateTime.UtcNow.AddMinutes(Convert.ToDouble(_config["JwtSettings:ExpiresInMinutes"])),
+                expires: DateTime.UtcNow.AddMinutes(_jwtSettings.ExpiresInMinutes),
                 signingCredentials: creds
             );
 

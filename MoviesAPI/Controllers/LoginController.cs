@@ -12,24 +12,22 @@ namespace MoviesAPI.Controllers
     {
 
         private readonly LoginService _loginService;
-        private readonly JWTService _JWTService;
 
 
-        public LoginController(LoginService loginService, JWTService jWTService)
+        public LoginController(LoginService loginService)
         {
             _loginService = loginService;
-            _JWTService = jWTService;
         }
 
-        [HttpPost("login")]
+        [HttpPost]
         public IActionResult Login([FromBody] LoginRequest request)
         {
-            UserDTO? user = _loginService.Login(request);
-            if (user == null)
+            LoggedUserDTO? loggedUser = _loginService.Login(request);
+            if (loggedUser == null)
             {
                 return Unauthorized(new { message = "Credenciais inválidas" });
             }
-            return Ok(user);
+            return Ok(loggedUser);
         }
     }
 }
