@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
 using MoviesAPI.Data;
-using MoviesAPI.Data.DTOs;
 using MoviesAPI.Models;
 
 namespace MoviesAPI.Controllers;
@@ -31,6 +29,18 @@ public class EventController : ControllerBase
     public IEnumerable<Event> GetEvents([FromQuery] int skip = 0, [FromQuery] int take = 20)
     {
         return _context.Events.Skip(skip).Take(take);
+    }
+
+    [HttpGet]
+    public IEnumerable<Event> GetEventsFromDoctor(int id, [FromQuery] int skip = 0, [FromQuery] int take = 20)
+    {
+        return _context.Events.Where(a => a.Doctor.Id == id).Skip(skip).Take(take);
+    }
+
+    [HttpGet]
+    public IEnumerable<Event> GetEventsFromUser(int id, [FromQuery] int skip = 0, [FromQuery] int take = 20)
+    {
+        return _context.Events.Where(a => a.Pacient.Id == id).Skip(skip).Take(take);
     }
 
     [HttpGet("{id}")]
