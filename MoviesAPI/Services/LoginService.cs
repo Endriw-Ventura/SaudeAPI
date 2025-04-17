@@ -43,7 +43,7 @@ namespace MoviesAPI.Services
             {
                 Id = id,
                 Email = email,
-                Role = "user",
+                Role = role,
                 Token = GerarJwt(id, email, role)
             };
         }

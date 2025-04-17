@@ -31,13 +31,13 @@ public class EventController : ControllerBase
         return _context.Events.Skip(skip).Take(take);
     }
 
-    [HttpGet]
+    [HttpGet("events/doctor/'{id}'")]
     public IEnumerable<Event> GetEventsFromDoctor(int id, [FromQuery] int skip = 0, [FromQuery] int take = 20)
     {
         return _context.Events.Where(a => a.Doctor.Id == id).Skip(skip).Take(take);
     }
 
-    [HttpGet]
+    [HttpGet("events/user/'{id}'")]
     public IEnumerable<Event> GetEventsFromUser(int id, [FromQuery] int skip = 0, [FromQuery] int take = 20)
     {
         return _context.Events.Where(a => a.Pacient.Id == id).Skip(skip).Take(take);
