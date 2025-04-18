@@ -32,6 +32,12 @@ public class DoctorController : ControllerBase
         return _doctorService.GetDoctors(skip, take);
     }
 
+    [HttpGet("specialty")]
+    public IEnumerable<Doctor> GetAvailableDoctors([FromQuery] int idSpecialty, [FromQuery] DateTime moment)
+    {
+        return _doctorService.GetAvailableDoctors(idSpecialty, moment);
+    }
+
     [HttpGet("{id}")]
     public IActionResult GetDoctorByID(int id)
     {

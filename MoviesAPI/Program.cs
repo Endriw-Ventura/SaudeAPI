@@ -44,6 +44,7 @@ builder.Services.AddScoped<DoctorService>();
 builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<AddressService>();
 builder.Services.AddScoped<UserInfoService>();
+builder.Services.AddScoped<EventService>();
 builder.Services.AddScoped<LoginService>();
 
 builder.Services.AddCors(options =>

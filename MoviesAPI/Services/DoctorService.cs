@@ -2,6 +2,8 @@
 using MoviesAPI.Data;
 using MoviesAPI.Models;
 using MoviesAPI.Data.DTOs.Doctor;
+using Microsoft.EntityFrameworkCore;
+using System.Linq.Expressions;
 
 namespace MoviesAPI.Services
 {
@@ -71,6 +73,42 @@ namespace MoviesAPI.Services
         public Doctor? GetDoctorByID(int id)
         {
             return _context.Doctors.FirstOrDefault(m => m.Id == id);
+        }
+
+        public IEnumerable<Doctor> GetAvailableDoctors(int idSpecialty, DateTime moment)
+        {
+            var weekday = moment.DayOfWeek;
+            var time = moment.TimeOfDay;
+            var convertedTime = TimeOnly.FromTimeSpan(time);
+            var day = moment.Day;
+            var month = moment.Month;
+            var year = moment.Year;
+            var predicado = DiaDaSemanaPredicate(weekday);
+
+            return _context.Doctors
+                    .Include(d => d.Events)
+                    .Where(d => d.SpecialtyId == idSpecialty)
+                    .Where(d => d.InitialHour <= convertedTime && d.FinalHour >= convertedTime)
+                    .Where(predicado)
+                    .Where(d => !d.Events
+                    .Any(a => a.Moment.Date == moment.Date 
+                    &&  a.Moment.TimeOfDay == moment.TimeOfDay)
+                    );
+        }
+
+        private Expression<Func<Doctor, bool>> DiaDaSemanaPredicate(DayOfWeek dia)
+        {
+            return dia switch
+            {
+                DayOfWeek.Sunday => d => d.WeekDays.Sunday,
+                DayOfWeek.Monday => d => d.WeekDays.Monday,
+                DayOfWeek.Tuesday => d => d.WeekDays.Tuesday,
+                DayOfWeek.Wednesday => d => d.WeekDays.Wednesday,
+                DayOfWeek.Thursday => d => d.WeekDays.Thursday,
+                DayOfWeek.Friday => d => d.WeekDays.Friday,
+                DayOfWeek.Saturday => d => d.WeekDays.Saturday,
+                _ => d => false
+            };
         }
 
         public Doctor? UpdateDoctor(int id, UpdateDoctorDTO updatedDoctor)

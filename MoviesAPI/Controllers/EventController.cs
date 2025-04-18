@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using MoviesAPI.Data;
+using MoviesAPI.Data.DTOs.Event;
 using MoviesAPI.Models;
+using MoviesAPI.Services;
+using System.Numerics;
 
 namespace MoviesAPI.Controllers;
 
@@ -10,43 +13,45 @@ namespace MoviesAPI.Controllers;
 [Authorize]
 public class EventController : ControllerBase
 {
-    private APIContext _context;
+    private EventService _eventService;
 
-    public EventController(APIContext context)
+    public EventController(EventService eventService)
     {
-        _context = context;
+        _eventService = eventService;
     }
 
     [HttpPost]
-    public IActionResult AddEvent([FromBody] Event evento)
+    public IActionResult AddEvent([FromBody] CreateEventDTO eventDTO)
     {
-        _context.Events.Add(evento);
-        _context.SaveChanges();
+        Event? evento = _eventService.CreateEvent(eventDTO);
+        if (evento == null)
+            return NotFound();
+
         return CreatedAtAction(nameof(GetEventByID), new { id = evento.Id }, evento);
     }
 
     [HttpGet]
     public IEnumerable<Event> GetEvents([FromQuery] int skip = 0, [FromQuery] int take = 20)
     {
-        return _context.Events.Skip(skip).Take(take);
+        return _eventService.GetEvents(skip, take);
     }
 
-    [HttpGet("events/doctor/'{id}'")]
-    public IEnumerable<Event> GetEventsFromDoctor(int id, [FromQuery] int skip = 0, [FromQuery] int take = 20)
+    [HttpGet("doctor/{id}")]
+    public IEnumerable<Event> GetEventsFromDoctor(int id)
     {
-        return _context.Events.Where(a => a.Doctor.Id == id).Skip(skip).Take(take);
+        return _eventService.GetEventsFromDoctor(id);
     }
 
-    [HttpGet("events/user/'{id}'")]
-    public IEnumerable<Event> GetEventsFromUser(int id, [FromQuery] int skip = 0, [FromQuery] int take = 20)
+    [HttpGet("user/{id}")]
+    public IEnumerable<Event> GetEventsFromUser(int id)
     {
-        return _context.Events.Where(a => a.Pacient.Id == id).Skip(skip).Take(take);
+        return _eventService.GetEventFromUser(id);
     }
 
     [HttpGet("{id}")]
     public IActionResult GetEventByID(int id)
     {
-        Event? evento = _context.Events.FirstOrDefault(m => m.Id == id);
+        Event? evento = _eventService.GetEventByID(id);
         if (evento == null)
             return NotFound();
 
@@ -54,27 +59,24 @@ public class EventController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public IActionResult UpdateEvent(int id, [FromBody] Event updatedEvent)
+    public IActionResult UpdateEvent(int id, [FromBody] UpdateEventDTO updatedEvent)
     {
-        Event? evento = _context.Events.FirstOrDefault(m => m.Id == id);
+        Event? evento = _eventService.GetEventByID(id);
         if (evento == null)
             return NotFound();
 
-        evento.Moment = updatedEvent.Moment;
-
-        _context.SaveChanges();
+        _eventService.UpdateEvent(id, updatedEvent);
         return NoContent();
     }
 
     [HttpDelete("{id}")]
     public IActionResult DeleteEvent(int id)
     {
-        Event? evento = _context.Events.FirstOrDefault(m => m.Id == id);
+        Event? evento = _eventService.GetEventByID(id);
         if (evento == null)
             return NotFound();
 
-        _context.Events.Remove(evento);
-        _context.SaveChanges();
+        _eventService.DeleteEvent(evento);   
         return NoContent();
     }
 }
