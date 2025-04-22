@@ -29,7 +29,7 @@ namespace MoviesAPI.Services
             {
                 Name = doctorDTO.Name,
                 Surname = doctorDTO.Surname,
-                Email = doctorDTO.Email, 
+                Email = doctorDTO.Email,
                 CRM = doctorDTO.CRM,
                 InitialHour = TimeOnly.Parse(doctorDTO.InitialHour),
                 FinalHour = TimeOnly.Parse(doctorDTO.FinalHour),
@@ -80,20 +80,18 @@ namespace MoviesAPI.Services
             var weekday = moment.DayOfWeek;
             var time = moment.TimeOfDay;
             var convertedTime = TimeOnly.FromTimeSpan(time);
-            var day = moment.Day;
-            var month = moment.Month;
-            var year = moment.Year;
             var predicado = DiaDaSemanaPredicate(weekday);
 
             return _context.Doctors
-                    .Include(d => d.Events)
-                    .Where(d => d.SpecialtyId == idSpecialty)
-                    .Where(d => d.InitialHour <= convertedTime && d.FinalHour >= convertedTime)
-                    .Where(predicado)
-                    .Where(d => !d.Events
-                    .Any(a => a.Moment.Date == moment.Date 
-                    &&  a.Moment.TimeOfDay == moment.TimeOfDay)
-                    );
+                        .Include(d => d.Events)
+                        .Where(d => d.SpecialtyId == idSpecialty)
+                        .Where(d => d.InitialHour <= convertedTime && d.FinalHour >= convertedTime)
+                        .Where(predicado)
+                        .Where(d => !d.Events
+                                .Any(a => a.Moment.Date == moment.Date &&
+                                    a.Moment.TimeOfDay > moment.AddHours(-1).TimeOfDay &&
+                                    a.Moment.TimeOfDay < moment.AddHours(1).TimeOfDay));
+
         }
 
         private Expression<Func<Doctor, bool>> DiaDaSemanaPredicate(DayOfWeek dia)

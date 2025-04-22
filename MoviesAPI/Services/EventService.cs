@@ -1,6 +1,7 @@
 ﻿using MoviesAPI.Data;
 using MoviesAPI.Models;
 using MoviesAPI.Data.DTOs.Event;
+using Microsoft.EntityFrameworkCore;
 
 namespace MoviesAPI.Services
 {
@@ -73,7 +74,7 @@ namespace MoviesAPI.Services
 
         public IEnumerable<Event> GetEventFromUser(int id)
         {
-            return _context.Events.Where(e => e.Pacient.Id == id);
+            return _context.Events.Where(e => e.Pacient.Id == id).Include(d => d.Pacient).Include(d => d.Doctor);
         }
     }
 }

@@ -12,10 +12,9 @@ builder.Services.Configure<JWTSettings>(builder.Configuration.GetSection("JWTSet
 var jwtSettings = builder.Configuration.GetSection("JWTSettings").Get<JWTSettings>();
 var key = Encoding.UTF8.GetBytes(jwtSettings.Secret);
 
-builder.Services.AddControllers().AddJsonOptions(options =>
-{
-    options.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.Preserve;
-});
+builder.Services.AddControllers()
+    .AddJsonOptions(x =>
+        x.JsonSerializerOptions.ReferenceHandler = System.Text.Json.Serialization.ReferenceHandler.IgnoreCycles);
 
 builder.Services.AddAuthentication(options =>
 {

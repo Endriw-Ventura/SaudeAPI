@@ -1,9 +1,12 @@
-﻿namespace MoviesAPI.Data.DTOs.Event
+﻿using MoviesAPI.Data.DTOs.Doctor;
+using MoviesAPI.Data.DTOs.User;
+
+namespace MoviesAPI.Data.DTOs.Event
 {
     public class GetEventDTO
     {
-        public int IdPacient { get; set; }
-        public int IdDoctor { get; set; }
+        public GetUserDTO Pacient { get; set; }
+        public GetDoctorDTO Doctor { get; set; }
         public DateTime Moment { get; set; }
     }
 }
