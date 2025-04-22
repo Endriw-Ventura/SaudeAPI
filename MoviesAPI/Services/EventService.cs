@@ -69,7 +69,7 @@ namespace MoviesAPI.Services
 
         public IEnumerable<Event> GetEventsFromDoctor(int id)
         {
-            return _context.Events.Where(e => e.Doctor.Id == id);
+            return _context.Events.Where(e => e.Doctor.Id == id).Include(d => d.Doctor).Include(d => d.Pacient);
         }
 
         public IEnumerable<Event> GetEventFromUser(int id)
