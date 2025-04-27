@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using MoviesAPI.Data.DTOs.User;
 using MoviesAPI.Models;
 using MoviesAPI.Services;
+using System.Security.Claims;
 
 namespace MoviesAPI.Controllers;
 
@@ -62,5 +63,26 @@ public class UserController : ControllerBase
 
         _userService.DeleteUser(user);
         return NoContent();
+    }
+
+    [Authorize]
+    [HttpGet("me")]
+    public IActionResult GetCurrentUser()
+    {
+        var email = User.FindFirst(ClaimTypes.Email)?.Value;
+        var role = User.FindFirst(ClaimTypes.Role)?.Value;
+        var id = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+
+        if (email == null || role == null)
+            return Unauthorized();
+
+        var user = new
+        {
+            Id = id,
+            Email = email,
+            Role = role
+        };
+
+        return Ok(user);
     }
 }
