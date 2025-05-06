@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace MoviesAPI.Migrations
 {
     /// <inheritdoc />
-    public partial class CricaoDasTabelasIniciais : Migration
+    public partial class FirstMigration : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -52,11 +52,13 @@ namespace MoviesAPI.Migrations
                         .Annotation("SqlServer:Identity", "1, 1"),
                     MotherName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     BloodType = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    MedicalCondition = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    HasCirurgies = table.Column<bool>(type: "bit", nullable: false),
+                    HasAllergies = table.Column<bool>(type: "bit", nullable: false),
+                    HasMedications = table.Column<bool>(type: "bit", nullable: false),
                     Allergies = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Medications = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PreviousCirurgies = table.Column<bool>(type: "bit", nullable: false),
-                    Cirurgies = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    MedicalCondition = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                    Cirurgies = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -64,23 +66,22 @@ namespace MoviesAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Doctors",
+                name: "Weekdays",
                 columns: table => new
                 {
                     Id = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    SpecialtyId = table.Column<int>(type: "int", nullable: false)
+                    Monday = table.Column<bool>(type: "bit", nullable: false),
+                    Sunday = table.Column<bool>(type: "bit", nullable: false),
+                    Tuesday = table.Column<bool>(type: "bit", nullable: false),
+                    Wednesday = table.Column<bool>(type: "bit", nullable: false),
+                    Thursday = table.Column<bool>(type: "bit", nullable: false),
+                    Friday = table.Column<bool>(type: "bit", nullable: false),
+                    Saturday = table.Column<bool>(type: "bit", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Doctors", x => x.Id);
-                    table.ForeignKey(
-                        name: "FK_Doctors_Specialties_SpecialtyId",
-                        column: x => x.SpecialtyId,
-                        principalTable: "Specialties",
-                        principalColumn: "Id",
-                        onDelete: ReferentialAction.Cascade);
+                    table.PrimaryKey("PK_Weekdays", x => x.Id);
                 });
 
             migrationBuilder.CreateTable(
@@ -110,6 +111,40 @@ namespace MoviesAPI.Migrations
                         name: "FK_Users_UserInfo_UserInfoId",
                         column: x => x.UserInfoId,
                         principalTable: "UserInfo",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Doctors",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    WeekdaysId = table.Column<int>(type: "int", nullable: false),
+                    SpecialtyId = table.Column<int>(type: "int", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Surname = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    CRM = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Price = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    InitialHour = table.Column<TimeOnly>(type: "time", nullable: false),
+                    FinalHour = table.Column<TimeOnly>(type: "time", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Doctors", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Doctors_Specialties_SpecialtyId",
+                        column: x => x.SpecialtyId,
+                        principalTable: "Specialties",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Doctors_Weekdays_WeekdaysId",
+                        column: x => x.WeekdaysId,
+                        principalTable: "Weekdays",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
@@ -145,6 +180,12 @@ namespace MoviesAPI.Migrations
                 name: "IX_Doctors_SpecialtyId",
                 table: "Doctors",
                 column: "SpecialtyId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Doctors_WeekdaysId",
+                table: "Doctors",
+                column: "WeekdaysId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
                 name: "IX_Events_DoctorId",
@@ -183,6 +224,9 @@ namespace MoviesAPI.Migrations
 
             migrationBuilder.DropTable(
                 name: "Specialties");
+
+            migrationBuilder.DropTable(
+                name: "Weekdays");
 
             migrationBuilder.DropTable(
                 name: "Address");

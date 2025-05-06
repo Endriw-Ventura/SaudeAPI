@@ -12,8 +12,8 @@ using MoviesAPI.Data;
 namespace MoviesAPI.Migrations
 {
     [DbContext(typeof(APIContext))]
-    [Migration("20250412210609_AdjustOnDoctorModel")]
-    partial class AdjustOnDoctorModel
+    [Migration("20250505234153_FirstMigration")]
+    partial class FirstMigration
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -82,6 +82,10 @@ namespace MoviesAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
                     b.Property<TimeOnly>("FinalHour")
                         .HasColumnType("time");
 
@@ -103,13 +107,19 @@ namespace MoviesAPI.Migrations
                     b.Property<int>("SpecialtyId")
                         .HasColumnType("int");
 
-                    b.Property<string>("WeekDays")
+                    b.Property<string>("Surname")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("WeekdaysId")
+                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
                     b.HasIndex("SpecialtyId");
+
+                    b.HasIndex("WeekdaysId")
+                        .IsUnique();
 
                     b.ToTable("Doctors");
                 });
@@ -222,6 +232,15 @@ namespace MoviesAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("HasAllergies")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HasCirurgies")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HasMedications")
+                        .HasColumnType("bit");
+
                     b.Property<string>("MedicalCondition")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -234,12 +253,43 @@ namespace MoviesAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("PreviousCirurgies")
+                    b.HasKey("Id");
+
+                    b.ToTable("UserInfo");
+                });
+
+            modelBuilder.Entity("MoviesAPI.Models.Weekdays", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("Friday")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Monday")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Saturday")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Sunday")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Thursday")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Tuesday")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("Wednesday")
                         .HasColumnType("bit");
 
                     b.HasKey("Id");
 
-                    b.ToTable("UserInfo");
+                    b.ToTable("Weekdays");
                 });
 
             modelBuilder.Entity("MoviesAPI.Models.Doctor", b =>
@@ -250,7 +300,15 @@ namespace MoviesAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.HasOne("MoviesAPI.Models.Weekdays", "WeekDays")
+                        .WithOne("Doctor")
+                        .HasForeignKey("MoviesAPI.Models.Doctor", "WeekdaysId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
                     b.Navigation("Specialty");
+
+                    b.Navigation("WeekDays");
                 });
 
             modelBuilder.Entity("MoviesAPI.Models.Event", b =>
@@ -315,6 +373,12 @@ namespace MoviesAPI.Migrations
             modelBuilder.Entity("MoviesAPI.Models.UserInfo", b =>
                 {
                     b.Navigation("User")
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("MoviesAPI.Models.Weekdays", b =>
+                {
+                    b.Navigation("Doctor")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

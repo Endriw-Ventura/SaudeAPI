@@ -15,7 +15,9 @@ namespace MoviesAPI.Data.DTOs.User
         public string Email { get; set; }
 
         public string Password { get; set; }
+
         public GetAddressDTO Address { get; set; }
+
         public GetUserInfoDTO UserInfo { get; set; }
     }
 }

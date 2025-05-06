@@ -16,7 +16,9 @@ namespace MoviesAPI.Services
                 MedicalCondition = userInfoDTO.MedicalCondition,
                 MotherName = userInfoDTO.MotherName,
                 Medications = userInfoDTO.Medications,
-                PreviousCirurgies = userInfoDTO.PreviousCirurgies
+                HasCirurgies = userInfoDTO.HasCirurgies,
+                HasAllergies = userInfoDTO.HasAllergies,
+                HasMedications = userInfoDTO.HasMedications
             };
             return userInfo;
         }

@@ -229,6 +229,15 @@ namespace MoviesAPI.Migrations
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<bool>("HasAllergies")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HasCirurgies")
+                        .HasColumnType("bit");
+
+                    b.Property<bool>("HasMedications")
+                        .HasColumnType("bit");
+
                     b.Property<string>("MedicalCondition")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -240,9 +249,6 @@ namespace MoviesAPI.Migrations
                     b.Property<string>("MotherName")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<bool>("PreviousCirurgies")
-                        .HasColumnType("bit");
 
                     b.HasKey("Id");
 
