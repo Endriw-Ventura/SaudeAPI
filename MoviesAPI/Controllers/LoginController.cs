@@ -25,7 +25,7 @@ namespace MoviesAPI.Controllers
             LoggedUserDTO? loggedUser = _loginService.Login(request);
             if (loggedUser == null)
             {
-                return Unauthorized(new { message = "Credenciais inválidas" });
+                return Unauthorized(new { message = "Invalid Credentials" });
             }
             return Ok(loggedUser);
         }
