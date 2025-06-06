@@ -13,7 +13,7 @@ namespace MoviesAPI.Services
             _config = config;
         }
 
-        public void EnviarEmail(Email request)
+        public void EnviarEmail(string address)
         {
             var remetente = _config["Email:Usuario"];
             var senha = _config["Email:Senha"];
@@ -25,7 +25,7 @@ namespace MoviesAPI.Services
                 EnableSsl = true,
             };
 
-            var message = new MailMessage(remetente, request.address, request.subject, request.body);
+            var message = new MailMessage(remetente, address, "Password Recovery", "Link to recover your password");
             smtp.Send(message);
         }
     }
