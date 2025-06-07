@@ -22,7 +22,7 @@ namespace MoviesAPI.Controllers
         }
 
         [HttpPost]
-        public IActionResult RedefinirSenha([FromBody] ResetPasswordDto dto)
+        public IActionResult ResetPassword([FromBody] ResetPasswordDto dto)
         {
             var tokenInfo = _emailService.GetPasswordResetToken(dto.Token);
 

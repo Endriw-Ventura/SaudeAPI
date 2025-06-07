@@ -27,16 +27,16 @@ namespace MoviesAPI.Controllers
                 var token = GeneratePasswordResetToken(address);
 
                 if (token == null)
-                    throw new Exception("Erro ao gerar o Token");
+                    throw new Exception("There was an error generating the token");
 
                 var link = GenerateResetLink(token);
-                var body = $"Clique aqui para redefinir sua senha: <a href=\"{link}\">Redefinir Senha</a>";
+                var body = $"Click here to reset your password: <a href=\"{link}\">Reset password</a>";
                 _emailService.EnviarEmail(address, subject, body);
-                return Ok("Email enviado com sucesso!");
+                return Ok("Email sent successfully!");
             }
             catch (Exception ex)
             {
-                return StatusCode(500, $"Erro ao enviar e-mail: {ex.Message}");
+                return StatusCode(500, $"There was an error sending the email: {ex.Message}");
             }
         }
 
@@ -55,7 +55,7 @@ namespace MoviesAPI.Controllers
 
         public string GenerateResetLink(string token)
         {
-            var baseUrl = "localhost:3000/redefinir-senha"; 
+            var baseUrl = "localhost:3000/reset-password"; 
             return $"{baseUrl}?token={token}";
         }
     }
