@@ -79,5 +79,17 @@ namespace MoviesAPI.Services
             _context.Users.Remove(user);
             _context.SaveChanges();
         }
+
+        public User? FindByEmail(object address)
+        {
+            return _context.Users.FirstOrDefault(user => user.Email.Equals(address));
+        }
+
+        public void EditPasswordReset(User user, string newPassword)
+        {
+            user.Password = newPassword;
+            _context.Users.Update(user);
+            _context.SaveChanges();
+        }
     }
 }
