@@ -37,7 +37,7 @@ namespace MoviesAPI.Services
         {
             var resetToken = new EmailResetToken
             {
-                Id = id,
+                UserId = id,
                 Token = token,
                 expire = dateTime
             };

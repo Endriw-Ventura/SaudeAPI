@@ -29,7 +29,7 @@ namespace MoviesAPI.Controllers
             if (tokenInfo == null || tokenInfo.expire < DateTime.UtcNow)
                 return BadRequest("Invalid or expired token");
 
-            var user = _userService.GetUserByID(tokenInfo.Id);
+            var user = _userService.GetUserByID(tokenInfo.UserId);
             if (user == null)
                 return NotFound();
 
