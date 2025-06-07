@@ -53,7 +53,7 @@ namespace MoviesAPI.Controllers
             return token;
         }
 
-        public string GenerateResetLink(string token)
+        private string GenerateResetLink(string token)
         {
             var baseUrl = "localhost:3000/reset-password"; 
             return $"{baseUrl}?token={token}";
