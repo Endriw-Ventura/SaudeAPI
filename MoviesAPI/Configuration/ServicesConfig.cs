@@ -20,6 +20,7 @@ namespace MoviesAPI.Configuration
             services.AddScoped<AddressService>();
             services.AddScoped<UserInfoService>();
             services.AddScoped<EventService>();
+            services.AddScoped<ExamService>();
             services.AddScoped<LoginService>();
             services.AddScoped<EmailService>();
 

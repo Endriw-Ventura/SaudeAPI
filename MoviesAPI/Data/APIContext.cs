@@ -11,6 +11,7 @@ public class APIContext : DbContext
     public DbSet<User> Users { get; set; }
     public DbSet<Doctor> Doctors { get; set; }
     public DbSet<Event> Events { get; set; }
+    public DbSet<Exam> Exams { get; set; }
     public DbSet<Specialty> Specialties { get; set; }    
     public DbSet<Weekdays> Weekdays { get; set; }    
     public DbSet<EmailResetToken> ResetTokens { get; set; }
