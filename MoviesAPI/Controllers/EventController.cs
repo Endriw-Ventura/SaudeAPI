@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using MoviesAPI.Data;
 using MoviesAPI.Data.DTOs.Event;
 using MoviesAPI.Models;
 using MoviesAPI.Services;
-using System.Numerics;
 
 namespace MoviesAPI.Controllers;
 
