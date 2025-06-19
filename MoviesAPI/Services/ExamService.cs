@@ -25,14 +25,10 @@ namespace MoviesAPI.Services
             if (pacient is null)
                 return null;
 
-            var doctor = _doctorService.GetDoctorByID(examDTO.IdDoctor);
-            if (doctor is null)
-                return null;
-
             var exam = new Exam
             {
                 Pacient = pacient,
-                Doctor = doctor,
+                ExamName = examDTO.ExamName,
                 Moment = examDTO.Moment
             };
 
@@ -67,14 +63,27 @@ namespace MoviesAPI.Services
             _context.SaveChanges();
         }
 
-        public IEnumerable<Exam> GetExamsFromDoctor(int id)
-        {
-            return _context.Exams.Where(e => e.Doctor.Id == id).Include(d => d.Doctor).Include(d => d.Pacient);
-        }
-
         public IEnumerable<Exam> GetExamsFromUser(int id)
         {
-            return _context.Exams.Where(e => e.Pacient.Id == id).Include(d => d.Pacient).Include(d => d.Doctor);
+            return _context.Exams.Where(e => e.Pacient.Id == id).Include(d => d.Pacient);
+        }
+
+        public IEnumerable<Exam> GetExamsFromDoctor(int id)
+        {
+            return _context.Exams
+                        .Where(exam => _context.Events
+                            .Where(ev => ev.Doctor.Id == id)
+                            .Select(ev => ev.Pacient.Id)
+                            .Distinct()
+                            .Contains(exam.Pacient.Id)
+                        )
+                        .Include(exam => exam.Pacient)
+                        .ToList();
+        }
+
+        public IEnumerable<User> GetAvailableUsersForExam(int doctorId)
+        {
+            return _context.Events.Where(u => u.Doctor.Id == doctorId).Select(e => e.Pacient).Distinct().ToList();
         }
     }
 }
